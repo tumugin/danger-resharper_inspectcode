@@ -1,4 +1,6 @@
-require File.expand_path("../spec_helper", __FILE__)
+# frozen_string_literal: true
+
+require File.expand_path("spec_helper", __dir__)
 
 module Danger
   describe Danger::DangerResharperInspectcode do
@@ -6,41 +8,38 @@ module Danger
       expect(Danger::DangerResharperInspectcode.new(nil)).to be_a Danger::Plugin
     end
 
-    #
-    # You should test your custom attributes and methods here
-    #
+    describe "Report Parser Test" do
+      before do
+        require_relative "../lib/resharper_inspectcode/report_parser"
+      end
+
+      it "Parse report.xml" do
+        report = ReportParser.parse_report_xml("spec/fixtures/report.xml")
+        expect(report.first).to(
+          eq Issue.new("MatsuriHime/Ho.cs", "14-47", 2, "Matsuri Hime is very cute.")
+        )
+        expect(report.select { |item| item.file == "Tsumugi/Nanyaine.cs" }.first).to(
+          eq Issue.new("Tsumugi/Nanyaine.cs", "18-47", 1, "Nanyaine, is this!?")
+        )
+      end
+    end
+
     describe "with Dangerfile" do
       before do
         @dangerfile = testing_dangerfile
         @my_plugin = @dangerfile.resharper_inspectcode
-
-        # mock the PR data
-        # you can then use this, eg. github.pr_author, later in the spec
-        json = File.read(File.dirname(__FILE__) + '/support/fixtures/github_pr.json') # example json: `curl https://api.github.com/repos/danger/danger-plugin-template/pulls/18 > github_pr.json`
-        allow(@my_plugin.github).to receive(:pr_json).and_return(json)
       end
 
-      # Some examples for writing tests
-      # You should replace these with your own.
-
-      it "Warns on a monday" do
-        monday_date = Date.parse("2016-07-11")
-        allow(Date).to receive(:today).and_return monday_date
-
-        @my_plugin.warn_on_mondays
-
-        expect(@dangerfile.status_report[:warnings]).to eq(["Trying to merge code on a Monday"])
+      it "Parse XML report file with plugin" do
+        @my_plugin.base_path = __dir__
+        @my_plugin.report("fixtures/report.xml")
+        expect(@my_plugin.violation_report[:warnings][0]).to(
+          eq Violation.new("Matsuri Hime is very cute.", false, "MatsuriHime/Ho.cs", 2)
+        )
+        expect(@my_plugin.violation_report[:warnings][2]).to(
+          eq Violation.new("Nanyaine, is this!?", false, "Tsumugi/Nanyaine.cs", 1)
+        )
       end
-
-      it "Does nothing on a tuesday" do
-        monday_date = Date.parse("2016-07-12")
-        allow(Date).to receive(:today).and_return monday_date
-
-        @my_plugin.warn_on_mondays
-
-        expect(@dangerfile.status_report[:warnings]).to eq([])
-      end
-
     end
   end
 end

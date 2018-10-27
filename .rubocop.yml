@@ -3,7 +3,7 @@
 # If you don't like these settings, just delete this file :)
 
 AllCops:
-  TargetRubyVersion: 2.0
+  TargetRubyVersion: 2.5
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
@@ -77,7 +77,7 @@ Metrics/CyclomaticComplexity:
 
 # Configuration parameters: AllowURI, URISchemes.
 Metrics/LineLength:
-  Max: 370
+  Max: 400
 
 # Configuration parameters: CountKeywordArgs.
 Metrics/ParameterLists:

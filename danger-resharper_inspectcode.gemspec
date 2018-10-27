@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['oishikazuki@gmail.com']
   spec.description   = %q{A short description of danger-resharper_inspectcode.}
   spec.summary       = %q{A longer description of danger-resharper_inspectcode.}
-  spec.homepage      = 'https://github.com/Kazuki Oishi/danger-resharper_inspectcode'
+  spec.homepage      = 'https://github.com/tumugin/danger-resharper_inspectcode'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/)
@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'danger-plugin-api', '~> 1.0'
+  spec.add_runtime_dependency 'oga', '~> 2.15'
 
   # General ruby development
   spec.add_development_dependency 'bundler', '~> 1.3'
@@ -28,8 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.4'
 
   # Linting code and docs
-  spec.add_development_dependency "rubocop"
-  spec.add_development_dependency "yard"
+  spec.add_development_dependency 'rubocop'
+  spec.add_development_dependency 'yard'
 
   # Makes testing easy via `bundle exec guard`
   spec.add_development_dependency 'guard', '~> 2.14'

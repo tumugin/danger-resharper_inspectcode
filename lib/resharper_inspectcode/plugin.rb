@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require_relative "report_parser"
+
 module Danger
   # This is your plugin class. Any attributes or methods you expose here will
   # be available from within your Dangerfile.
@@ -13,21 +17,26 @@ module Danger
   #
   #          my_plugin.warn_on_mondays
   #
-  # @see  Kazuki Oishi/danger-resharper_inspectcode
+  # @see  tumugin/danger-resharper_inspectcode
   # @tags monday, weekends, time, rattata
-  #
+  # s
   class DangerResharperInspectcode < Plugin
-
-    # An attribute that you can read/write from your Dangerfile
+    # Base path of report file
     #
-    # @return   [Array<String>]
-    attr_accessor :my_attribute
+    # @return   [String]
+    attr_accessor :base_path
 
-    # A method that you can call from your Dangerfile
-    # @return   [Array<String>]
-    #
-    def warn_on_mondays
-      warn 'Trying to merge code on a Monday' if Date.today.wday == 1
+    # Report warnings
+    # @param file [String] File path of ReSharper InspectCode report file
+    def report(file)
+      raise "Please specify file name." if file.empty?
+      raise "No report file was found at #{file}" if File.exist?(file)
+
+      filepath = @base_path + (@base_path.end_with?("/") ? "" : "/") + file
+      issues = ReportParser.parse_report_xml(filepath)
+      issues.each do |issue|
+        warn(issue.message, file: issue.file, line: issue.line)
+      end
     end
   end
 end
