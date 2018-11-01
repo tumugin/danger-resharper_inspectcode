@@ -17,6 +17,7 @@ module Danger
 
     # Report warnings
     # @param file [String] File path of ReSharper InspectCode report file
+    # @return [void]
     def report(file)
       raise "Please specify file name." if file.empty?
 
