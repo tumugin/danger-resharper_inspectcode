@@ -19,13 +19,19 @@ module Danger
     # @param file [String] File path of ReSharper InspectCode report file
     def report(file)
       raise "Please specify file name." if file.empty?
-      raise "No report file was found at #{file}" if File.exist?(file)
 
       filepath = @base_path + (@base_path.end_with?("/") ? "" : "/") + file
+      raise "No report file was found at #{filepath}" unless File.exist?(filepath)
+
       issues = ReportParser.parse_report_xml(filepath)
       issues.each do |issue|
         warn(issue.message, file: issue.file, line: issue.line)
       end
+    end
+
+    def initialize(dangerfile)
+      super(dangerfile)
+      @base_path ||= Dir.pwd
     end
   end
 end

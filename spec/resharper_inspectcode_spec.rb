@@ -40,6 +40,11 @@ module Danger
           eq Violation.new("Nanyaine, is this!?", false, "Tsumugi/Nanyaine.cs", 1)
         )
       end
+
+      it "Throw Exception when report file not found" do
+        @my_plugin.base_path = "/hogehagefuga/"
+        expect { @my_plugin.report("hogedir/hogehoge.xml") }.to raise_error(Exception, /No report file was found at/)
+      end
     end
   end
 end
