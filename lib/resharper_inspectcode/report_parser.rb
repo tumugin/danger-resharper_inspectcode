@@ -6,7 +6,7 @@ Issue = Struct.new(:file, :offset, :line, :message)
 
 class ReportParser
   def self.parse_report_xml(filepath)
-    xml_file = open(filepath)
+    xml_file = File.open(filepath)
     document = Oga.parse_xml(xml_file)
     issues = []
     document.xpath("//Report/Issues/Project").each do |project|
